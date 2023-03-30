@@ -141,6 +141,9 @@ class Polinomio(object):
             return paux
         else:
             return "No se puede dividir"
+        
+
+
     
 
     
