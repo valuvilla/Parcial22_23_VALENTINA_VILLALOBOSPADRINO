@@ -110,7 +110,6 @@ if __name__ == '__main__':
     for i in range(5):
         for j in range(5):
             m[i][j] = int(input(f'Valor de la casilla {i}{j}: '))
-    
     print (m.determinant_recursive())
     
 
