@@ -126,7 +126,8 @@ def desencriptar(cadena,tabla):
     for i in range(len(cadena)):
         posicion=funcion_hash(ord(cadena[i]),len(tabla))
         if tabla[posicion] != None:
-            cadena_desencriptada+=chr((Lista.buscar(tabla[posicion],int(cadena[i]))).info)
+
+            cadena_desencriptada+=chr(ta)
         else:
             cadena_desencriptada+=cadena[i]
     return cadena_desencriptada
