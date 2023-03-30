@@ -15,10 +15,13 @@ siguientes requerimientos:
 # Path: ej6.py
 #
 
+
 class nodoLista(object):
-    sig,info=None,None
+    """Clase nodoLista"""
+    info, sig = None, None
 
 class Lista(object):
+    """Clase lista simplemente enlazada"""
 
     def __init__(self) -> None:
         """Crea una lista vacía"""
@@ -107,17 +110,25 @@ def agregar1(tabla, dato):
 
 
 def encriptar(cadena,tabla):
-    """Encripta cada caracter en 8 caracteres"""
+    """Encripta una cadena de caracteres."""
     cadena_encriptada=""
-    for caracter in cadena:
-        cadena_encriptada+=str(funcion_hash(caracter,len(tabla)))
+    for i in range(len(cadena)):
+        posicion=funcion_hash(ord(cadena[i]),len(tabla))
+        if tabla[posicion] != None:
+            cadena_encriptada+=str(tabla[posicion].inicio.info)
+        else:
+            cadena_encriptada+=cadena[i]
     return cadena_encriptada
 
 def desencriptar(cadena,tabla):
-    """Desencripta cada caracter en 8 caracteres"""
+    """Desencripta una cadena de caracteres."""
     cadena_desencriptada=""
-    for caracter in cadena:
-        cadena_desencriptada+=str(Lista.buscar(tabla[int(caracter)],int(caracter)).info)
+    for i in range(len(cadena)):
+        posicion=funcion_hash(ord(cadena[i]),len(tabla))
+        if tabla[posicion] != None:
+            cadena_desencriptada+=chr((Lista.buscar(tabla[posicion],int(cadena[i]))).info)
+        else:
+            cadena_desencriptada+=cadena[i]
     return cadena_desencriptada
 
 if __name__=="__main__":
@@ -132,6 +143,6 @@ if __name__=="__main__":
     print("Cadena encriptada: ",cadena_encriptada)
     cadena_desencriptada=desencriptar(cadena_encriptada,desencriptado)
     print("Cadena desencriptada: ",cadena_desencriptada)
-    
+
     
 #insertar, buscar, eliminar, lista_vacia
