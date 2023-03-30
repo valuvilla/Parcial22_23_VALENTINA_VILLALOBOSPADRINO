@@ -185,7 +185,7 @@ class Matrix(object):
             r += 1
         return result
     
-    def determinant(self):
+    def determinant_recursive(self):
         if self.rows != self.cols:
             raise Exception("Matrix must be square")
         if self.rows == 1:
@@ -194,32 +194,18 @@ class Matrix(object):
             return self[0][0] * self[1][1] - self[0][1] * self[1][0]
         result = 0
         for i in range(self.cols):
-            result += ((-1) ** i) * self[0][i] * self.minor(0, i).determinant()
+            result += ((-1) ** i) * self[0][i] * self.minor(0, i).determinant_recursive()
         return result
     
-    def cofactor(self, row, col):
-        return ((-1) ** (row + col)) * self.minor(row, col).determinant()
-    
-    def adjugate(self):
-        if self.rows != self.cols:
-            raise Exception("Matrix must be square")
-        result = Matrix(self.rows, self.cols)
-        for i in range(self.rows):
-            for j in range(self.cols):
-                result[i][j] = self.cofactor(j, i)
-        return result
+
+        
 
 if __name__ == '__main__':
-    m = Matrix(3, 3)
-    m[0][0] = 1
-    m[0][1] = 2
-    m[0][2] = 3
-    m[1][0] = 4
-    m[1][1] = 5
-    m[1][2] = 6
-    m[2][0] = 7
-    m[2][1] = 8
-    m[2][2] = 9
-    print (m.determinant())
+    m = Matrix(5, 5)
+    for i in range(5):
+        for j in range(5):
+            m[i][j] = int(input(f'Valor de la casilla {i}{j}: '))
+    
+    print (m.determinant_recursive())
     
 
