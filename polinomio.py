@@ -111,6 +111,36 @@ class Polinomio(object):
                 paux.agregar_termino(i,total)
         return paux
     
-    def d
+    def multiplicar(polinomio1, polinomio2):
+        paux=Polinomio() #creamos un polinomio auxiliar
+        pol1=polinomio1.termino_mayor #creamos un nodo pol1 que apunta al termino mayor del polinomio 1
+        while pol1!=None:
+            pol2=polinomio2.termino_mayor #creamos un nodo pol2 que apunta al termino mayor del polinomio 2
+            while pol2!=None:
+                termino=pol1.info.termino+pol2.info.termino #sumamos los terminos
+                valor=pol1.info.valor*pol2.info.valor #multiplicamos los valores
+                if paux.existe_polinomio(termino): #si el termino existe en el polinomio auxiliar
+                    valor+=paux.obtener_valor(termino) #sumamos el valor del termino al valor del polinomio auxiliar
+                    paux.modificar_termino(termino, valor) #modificamos el valor del termino
+                else:
+                    paux.agregar_termino(termino, valor)
+                pol2=pol2.sig
+            pol1=pol1.sig
+        return paux
+    
+    def dividir(polinomio1, polinomio2):
+        """Dividir dos polinomios"""
+        paux=Polinomio() #creamos un polinomio auxiliar
+        if polinomio1.grado >= polinomio2.grado:
+            pol1=polinomio1.termino_mayor #creamos un nodo pol1 que apunta al termino mayor del polinomio 1
+            while pol1!=None:
+                termino=pol1.info.termino-polinomio2.grado #restamos los terminos
+                valor=pol1.info.valor/polinomio2.obtener_valor(polinomio2.grado) #dividimos los valores
+                paux.agregar_termino(termino, valor) #agregamos el termino al polinomio auxiliar
+                pol1=pol1.sig
+            return paux
+        else:
+            return "No se puede dividir"
+    
 
     
