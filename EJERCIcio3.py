@@ -17,3 +17,12 @@ class Alumno:
         else:
             print(f"El alumno {nombre} ha suspendido {nota}")
     
+if __name__ == "__main__":
+    alumno1 = Alumno("Juan", 6)
+    alumno1.calificacion(alumno1.nota, alumno1.nombre)
+    alumno2 = Alumno("Ana", 4)
+    alumno2.calificacion(alumno2.nota, alumno2.nombre)
+    alumno3 = Alumno("Pedro", 7)
+    alumno3.calificacion(alumno3.nota, alumno3.nombre)
+    alumno2= Alumno("Maria", 3)
+    alumno2.calificacion(alumno2.nota, alumno2.nombre)
