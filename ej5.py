@@ -15,5 +15,123 @@ siguientes requerimientos:
 # Path: ej6.py
 #
 
-import random
+class nodoLista(object):
+    sig,info=None,None
 
+class Lista(object):
+
+    def __init__(self) -> None:
+        """Crea una lista vacía"""
+        self.inicio = None
+        self.tamanio = 0
+
+    def insertar(lista, dato):
+        """Inserta el dato pasado en la lista"""
+        nodo=nodoLista()
+        nodo.info=dato
+        if (lista.inicio == None) or (dato < lista.inicio.info):
+            nodo.sig = lista.inicio
+            lista.inicio = nodo
+
+        else:
+            ant = lista.inicio
+            act = lista.inicio.sig
+            while (act != None) and (dato > act.info):
+                ant= ant.sig
+                act= act.sig
+            nodo.sig = act
+            ant.sig = nodo
+        lista.tamanio += 1
+
+    def lista_vacia(lista):
+        """Verifica si la lista está vacía"""
+        return lista.inicio == None
+        
+    def eliminar(lista, clave):
+        """Elimina un elemento de la lista y lo devuelve si lo encuentra"""
+        if lista.inicio.info == clave:
+            dato = lista.inicio.info
+            lista.inicio = lista.inicio.sig
+            lista.tamanio -= 1
+        else:
+            ant = lista.inicio
+            act = lista.inicio.sig
+            while (act != None) and (act.info != clave):
+                ant = ant.sig
+                act = act.sig
+            if act != None:
+                dato = act.info
+                ant.sig = act.sig
+                lista.tamanio -= 1
+            else:
+                raise Exception("No se encontró el dato")
+        return dato
+    
+    def tamanio_lista(lista):
+        """Devuelve el tamaño de la lista"""
+        return lista.tamanio
+    
+    def buscar(lista, buscado):
+        """Devuelve la dirección del elemento buscado"""
+        aux=lista.inicio
+        while (aux != None) and (aux.info != buscado):
+            aux=aux.sig
+        return aux
+    
+    def barrido(lista):
+        """ Realiza un barrido de la lista"""
+        aux=lista.inicio
+        while aux != None:
+            print(aux.info)
+            aux=aux.sig
+
+def crear_tabla_hash(tamanio):
+    tabla=[None]*tamanio
+    return tabla
+
+def cantidad_elementos(tabla):
+    return len(tabla)-tabla.count(None)
+
+
+def funcion_hash(dato,tamanio_tabla):
+    """Determina la posicion del dato en la tabla."""
+    # hash por division para este caso
+    return len(str(dato).strip())%tamanio_tabla
+
+def agregar1(tabla, dato):
+    """Agrega un elemento a la tabla encadenada."""
+    posicion=funcion_hash(dato,len(tabla))
+    if tabla[posicion] == None:
+        tabla[posicion]=Lista()
+    Lista.insertar(tabla[posicion],dato)
+
+
+def encriptar(cadena,tabla):
+    """Encripta cada caracter en 8 caracteres"""
+    cadena_encriptada=""
+    for caracter in cadena:
+        cadena_encriptada+=str(funcion_hash(caracter,len(tabla)))
+    return cadena_encriptada
+
+def desencriptar(cadena,tabla):
+    """Desencripta cada caracter en 8 caracteres"""
+    cadena_desencriptada=""
+    for caracter in cadena:
+        cadena_desencriptada+=str(Lista.buscar(tabla[int(caracter)],int(caracter)).info)
+    return cadena_desencriptada
+
+if __name__=="__main__":
+    encriptado=crear_tabla_hash(126)
+    desencriptado=crear_tabla_hash(126)
+    for i in range(32,126):
+        agregar1(encriptado,i)
+        agregar1(desencriptado,i)
+    cadena="hola mundo"
+    print("Cadena original: ",cadena)
+    cadena_encriptada=encriptar(cadena,encriptado)
+    print("Cadena encriptada: ",cadena_encriptada)
+    cadena_desencriptada=desencriptar(cadena_encriptada,desencriptado)
+    print("Cadena desencriptada: ",cadena_desencriptada)
+    
+    
+#insertar, buscar, eliminar, lista_vacia

@@ -3,28 +3,28 @@
 class Node(object):
     info, sig = None, None
 
-class LinkedList(object):
-    def __init__(self, head=None):
-        self.head = head
+class ListaEnlazada(object):
+    def __init__(self, cima=None):
+        self.cima = cima
 
     def append(self, info):
         aux = Node()
-        if self.head:
-            actual = self.head
+        if self.cima:
+            actual = self.cima
             while actual.sig:
                 actual = actual.sig
             actual.sig = aux.info
         else:
-            self.head = aux.info
+            self.cima = aux.info
 
     def __iter__(self):
-        actual = self.head
+        actual = self.cima
         while actual:
             yield actual
             actual = actual.sig
 
     def __len__(self):
-        actual = self.head
+        actual = self.cima
         total = 0
         while actual:
             total += 1
@@ -33,10 +33,10 @@ class LinkedList(object):
 
     def __repr__(self):
         nodes = []
-        actual = self.head
+        actual = self.cima
         while actual:
-            if actual.info is self.head:
-                nodes.append("[Head: %s]" % actual.info)
+            if actual.info is self.cima:
+                nodes.append("[cima: %s]" % actual.info)
             elif actual.sig is None:
                 nodes.append("[Tail: %s]" % actual.info)
             else:
@@ -47,7 +47,7 @@ class LinkedList(object):
     def __getitem__(self, index):
         if index >= len(self) or index < 0:
             raise IndexError("Indice fuera de rango")
-        actual = self.head
+        actual = self.cima
         for i in range(index):
             actual = actual.sig
         return actual.info
@@ -55,7 +55,7 @@ class LinkedList(object):
     def __setitem__(self, index, info):
         if index >= len(self) or index < 0:
             raise IndexError("Indice fuera de rango")
-        actual = self.head
+        actual = self.cima
         for i in range(index):
             actual = actual.sig
         actual.info = info
@@ -64,7 +64,7 @@ class Matrix(object):
     def __init__(self, filas, columnas):
         self.filas = filas
         self.columnas = columnas
-        self.matrix = [LinkedList() for i in range(filas)]
+        self.matrix = [ListaEnlazada() for i in range(filas)]
         for row in self.matrix:
             for i in range(columnas):
                 row.append(0)
