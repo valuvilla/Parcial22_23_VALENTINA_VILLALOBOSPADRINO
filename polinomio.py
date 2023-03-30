@@ -29,5 +29,6 @@ class Polinomio(object):
         self.termino_mayor=None
         self.grado=-1
 
-    def agregar_termino(poil)
+    def agregar_termino(polinomio, termino, valor):
+        
     
