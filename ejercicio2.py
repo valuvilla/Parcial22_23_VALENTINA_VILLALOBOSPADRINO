@@ -10,17 +10,23 @@ Dada la lista anterior y un valor 145 devolver el índice de 145 en la lista si 
 """
 
 def parte1(lista):
+    laux=[] #creamos una lista auxiliar
     for i in range(0, len(lista)):
         if lista[i]%10==0 and lista[i]<200:
-            print(lista[i])
+            laux.append(lista[i])
+    return laux
 
 def parte2(lista):
     #Para el programa si llega a un número mayor que 300
+    laux=[] #creamos una lista auxiliar
     for i in range(0, len(lista)):
         if lista[i]>300:
+            print(f"El numero {lista[i]} es mayor que 300")
             break
         else:
-            print(lista[i])
+            laux.append(lista[i])
+    return laux
+            
 
 
 
@@ -65,3 +71,10 @@ def indice(lista, valor):
         if lista[i]==valor:
             return i
     return -1
+
+if __name__ == "__main__":
+    lista=[18, 50, 210, 80, 145, 333, 70, 30]
+    print(f"Los numeros que cumplen esto son: {parte1(lista)}")
+    print(f"Lista con los cambios: {parte2(lista)}")
+    print(f'La lista ordenada es : {mergesort(lista)}')
+    print(f'El número {145} se encuentra en la posicion : {indice(lista, 145)}')
