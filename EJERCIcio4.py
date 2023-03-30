@@ -4,6 +4,9 @@
 # 
 
 
+import unittest
+
+
 class Alumno:
     def __init__(self, nombre, nota):
         self.nombre = nombre
@@ -18,6 +21,17 @@ class Alumno:
             print(f"El alumno {nombre} ha aprobado con {nota}")
         else:
             print(f"El alumno {nombre} ha suspendido {nota}")
+
+class TestAlumno(unittest.TestCase):
+    def test_calificacion(self):
+        alumno1 = Alumno("Juan", 6)
+        print(alumno1.__str__())
+        alumno2 = Alumno("Ana", 4)
+        print(alumno2.__str__())
+        alumno3 = Alumno("Pedro", 7)
+        print(alumno3.__str__())
+        alumno2= Alumno("Maria", 3)
+        print(alumno2.__str__())
     
 if __name__ == "__main__":
     alumno1 = Alumno("Juan", 6)
@@ -28,3 +42,4 @@ if __name__ == "__main__":
     print(alumno3.__str__())
     alumno2= Alumno("Maria", 3)
     print(alumno2.__str__())
+    unittest.main()
