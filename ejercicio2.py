@@ -9,6 +9,20 @@ Organizar la lista mediante el método de ordenamiento merge sort
 Dada la lista anterior y un valor 145 devolver el índice de 145 en la lista si 145 está en la lista, y -1 si 145 no está en la lista
 """
 
+def parte1(lista):
+    for i in range(0, len(lista)):
+        if lista[i]%10==0 and lista[i]<200:
+            print(lista[i])
+
+def parte2(lista):
+    #Para el programa si llega a un número mayor que 300
+    for i in range(0, len(lista)):
+        if lista[i]>300:
+            break
+        else:
+            print(lista[i])
+
+
 
 def mergesort(lista):
     """"Método de ordenamiento mergesort"""
@@ -32,4 +46,22 @@ def mergesort(lista):
         
 
 def merge(izquierda, derecha):
-    
+    """Función auziliar para el merge sort"""
+    lista_mezclada=[]
+    while(len(izquierda) > 0 and len(derecha) > 0): #mientras la lista izquierda y la lista derecha tengan elementos
+        if izquierda[0] < derecha[0]:
+            lista_mezclada.append(izquierda.pop(0)) #agregamos el primer elemento de la lista izquierda a la lista mezclada
+        else:
+            lista_mezclada.append(derecha.pop(0)) #agregamos el primer elemento de la lista derecha a la lista mezclada
+    if len(izquierda) > 0:
+        lista_mezclada+=izquierda #agregamos los elementos restantes de la lista izquierda a la lista mezclada
+    if len(derecha) > 0:
+        lista_mezclada+=derecha #agregamos los elementos restantes de la lista derecha a la lista mezclada
+    return lista_mezclada
+
+def indice(lista, valor):
+    """Función que devuelve el índice de un valor en una lista"""
+    for i in range(0, len(lista)):
+        if lista[i]==valor:
+            return i
+    return -1
