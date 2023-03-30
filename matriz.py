@@ -1,86 +1,183 @@
 # hacer una matriz nxn con nodos y una lista enlzada
 # para cada nodo
 class Node(object):
-    info, sig = None, None
+    def __init__(self, data=None, next=None):
+        self.data = data
+        self.next = next
 
-class ListaEnlazada(object):
-    def __init__(self, cima=None):
-        self.cima = cima
+class LinkedList(object):
+    def __init__(self, head=None):
+        self.head = head
 
-    def append(self, info):
-        aux = Node()
-        if self.cima:
-            actual = self.cima
-            while actual.sig:
-                actual = actual.sig
-            actual.sig = aux.info
+    def append(self, data):
+        new_node = Node(data)
+        if self.head:
+            current = self.head
+            while current.next:
+                current = current.next
+            current.next = new_node
         else:
-            self.cima = aux.info
+            self.head = new_node
 
     def __iter__(self):
-        actual = self.cima
-        while actual:
-            yield actual
-            actual = actual.sig
+        current = self.head
+        while current:
+            yield current
+            current = current.next
 
     def __len__(self):
-        actual = self.cima
+        current = self.head
         total = 0
-        while actual:
+        while current:
             total += 1
-            actual = actual.sig
+            current = current.next
         return total
 
     def __repr__(self):
         nodes = []
-        actual = self.cima
-        while actual:
-            if actual.info is self.cima:
-                nodes.append("[cima: %s]" % actual.info)
-            elif actual.sig is None:
-                nodes.append("[Tail: %s]" % actual.info)
+        current = self.head
+        while current:
+            if current.data is self.head:
+                nodes.append("[Head: %s]" % current.data)
+            elif current.next is None:
+                nodes.append("[Tail: %s]" % current.data)
             else:
-                nodes.append("[%s]" % actual.info)
-            actual = actual.sig
+                nodes.append("[%s]" % current.data)
+            current = current.next
         return '-> '.join(nodes)
     
     def __getitem__(self, index):
         if index >= len(self) or index < 0:
-            raise IndexError("Indice fuera de rango")
-        actual = self.cima
+            raise IndexError("Index out of range")
+        current = self.head
         for i in range(index):
-            actual = actual.sig
-        return actual.info
+            current = current.next
+        return current.data
     
-    def __setitem__(self, index, info):
+    def __setitem__(self, index, data):
         if index >= len(self) or index < 0:
-            raise IndexError("Indice fuera de rango")
-        actual = self.cima
+            raise IndexError("Index out of range")
+        current = self.head
         for i in range(index):
-            actual = actual.sig
-        actual.info = info
+            current = current.next
+        current.data = data
 
 class Matrix(object):
-    def __init__(self, filas, columnas):
-        self.filas = filas
-        self.columnas = columnas
-        self.matrix = [ListaEnlazada() for i in range(filas)]
+    def __init__(self, rows, cols):
+        self.rows = rows
+        self.cols = cols
+        self.matrix = [LinkedList() for i in range(rows)]
         for row in self.matrix:
-            for i in range(columnas):
+            for i in range(cols):
                 row.append(0)
 
+    def __repr__(self):
+        for row in self.matrix:
+            print(row)
+        return ''
+
+    def __getitem__(self, index):
+        return self.matrix[index]
+
+    def __setitem__(self, index, data):
+        self.matrix[index] = data
+
+    def __iter__(self):
+        for row in self.matrix:
+            yield row
+
+    def __len__(self):
+        return len(self.matrix)
+
+    def __add__(self, other):
+        if self.rows != other.rows or self.cols != other.cols:
+            raise Exception("Matrices must be of the same size")
+        result = Matrix(self.rows, self.cols)
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result[i][j] = self[i][j] + other[i][j]
+        return result
+
+    def __sub__(self, other):
+        if self.rows != other.rows or self.cols != other.cols:
+            raise Exception("Matrices must be of the same size")
+        result = Matrix(self.rows, self.cols)
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result[i][j] = self[i][j] - other[i][j]
+        return result
+
+    def __mul__(self, other):
+        if self.cols != other.rows:
+            raise Exception("Matrices must be m*n and n*p")
+        result = Matrix(self.rows, other.cols)
+        for i in range(self.rows):
+            for j in range(other.cols):
+                for k in range(self.cols):
+                    result[i][j] += self[i][k] * other[k][j]
+        return result
+
+    def transpose(self):
+        result = Matrix(self.cols, self.rows)
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result[j][i] = self[i][j]
+        return result
+
+    def identity(self):
+        if self.rows != self.cols:
+            raise Exception("Identity matrix must be square")
+        result = Matrix(self.rows, self.cols)
+        for i in range(self.rows):
+            result[i][i] = 1
+        return result
     
+    def __eq__(self, other):
+        if self.rows != other.rows or self.cols != other.cols:
+            return False
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if self[i][j] != other[i][j]:
+                    return False
+        return True
     
-    def menor(self, row, col):
-        if self.filas != self.columnas:
-            raise Exception("Matriz no cuadrada")
-        result = Matrix(self.filas - 1, self.columnas - 1)
+    def __ne__(self, other):
+        return not self.__eq__(other)
+    
+    def __pow__(self, power):
+        if self.rows != self.cols:
+            raise Exception("Matrix must be square")
+        result = self.identity()
+        for i in range(power):
+            result = result * self
+        return result
+    
+    def __div__(self, other):
+        if self.rows != self.cols:
+            raise Exception("Matrix must be square")
+        return self * other.inverse()
+    
+    def inverse(self):
+        if self.rows != self.cols:
+            raise Exception("Matrix must be square")
+        if self.determinant() == 0:
+            raise Exception("Matrix is not invertible")
+        result = Matrix(self.rows, self.cols)
+        for i in range(self.rows):
+            for j in range(self.cols):
+                result[i][j] = ((-1) ** (i + j)) * self.minor(i, j).determinant()
+        return result.transpose() * (1.0 / self.determinant())
+    
+    def minor(self, row, col):
+        if self.rows != self.cols:
+            raise Exception("Matrix must be square")
+        result = Matrix(self.rows - 1, self.cols - 1)
         r = 0
-        for i in range(self.filas):
+        for i in range(self.rows):
             if i == row:
                 continue
             c = 0
-            for j in range(self.columnas):
+            for j in range(self.cols):
                 if j == col:
                     continue
                 result[r][c] = self[i][j]
@@ -88,43 +185,26 @@ class Matrix(object):
             r += 1
         return result
     
-    def determinant_recursive(self):
-        if self.filas != self.columnas:
-            raise Exception("Matriz no cuadrada")
-        if self.filas == 1:
+    def determinant(self):
+        if self.rows != self.cols:
+            raise Exception("Matrix must be square")
+        if self.rows == 1:
             return self[0][0]
-        if self.filas == 2:
+        if self.rows == 2:
             return self[0][0] * self[1][1] - self[0][1] * self[1][0]
         result = 0
-        for i in range(self.columnas):
-            result += ((-1) ** i) * self[0][i] * self.menor(0, i).determinant_recursive()
+        for i in range(self.cols):
+            result += ((-1) ** i) * self[0][i] * self.minor(0, i).determinant()
         return result
     
-    def determinant_iterative(self):
-        # Matriz 1x1
-        if self.filas != self.columnas:
-            raise Exception("Matriz no cuadrada")
-        if self.filas == 1:
-            return self[0][0]
-        # Matriz 2x2
-        if self.filas == 2:
-            return self[0][0] * self[1][1] - self[0][1] * self[1][0]
-        # Matriz 3x3
-        if self.filas == 3:
-            return self[0][0] * self[1][1] * self[2][2] + self[0][1] * self[1][2] * self[2][0] + self[0][2] * self[1][0] * self[2][1] - self[0][2] * self[1][1] * self[2][0] - self[0][1] * self[1][0] * self[2][2] - self[0][0] * self[1][2] * self[2][1]
-        # Matriz 4x4
-        if self.filas == 4:
-            return self[0][0]*self[1][1]*self[2][2]*self[3][3]+self[0][1]*self[1][2]*self[2][3]*self[3][0]+self[0][2]*self[1][3]*self[2][0]*self[3][1]+self[0][3]*self[1][0]*self[2][1]*self[3][2]-self[0][3]*self[1][2]*self[2][1]*self[3][0]-self[0][2]*self[1][1]*self[2][0]*self[3][3]-self[0][1]*self[1][0]*self[2][3]*self[3][2]-self[0][0]*self[1][3]*self[2][2]*self[3][1]
-        # Matriz 5x5
-        if self.filas == 5:
-            return self[0][0]*self[1][1]*self[2][2]*self[3][3]*self[4][4]+self[0][1]*self[1][2]*self[2][3]*self[3][4]*self[4][0]+self[0][2]*self[1][3]*self[2][4]*self[3][0]*self[4][1]+self[0][3]*self[1][4]*self[2][0]*self[3][1]*self[4][2]+self[0][4]*self[1][0]*self[2][1]*self[3][2]*self[4][3]-self[0][4]*self[1][2]*self[2][1]*self[3][0]*self[4][3]-self[0][3]*self[1][1]*self[2][0]*self[3][4]*self[4][2]-self[0][2]*self[1][0]*self[2][4]*self[3][3]*self[4][1]-self[0][1]*self[1][4]*self[2][3]*self[3][2]*self[4][0]-self[0][0]*self[1][3]*self[2][2]*self[3][1]*self[4][4]
+        
 
 if __name__ == '__main__':
-    m = Matrix(5, 5)
-    for i in range(5):
-        for j in range(5):
-            m[i][j] = int(input(f'Valor de la casilla {i}{j}: '))
-    print(f'Determinante recursivo: {m.determinant_recursive()}')
-    print(f'Determinante iterativo: {m.determinant_iterative()}')
-    
+    m = Matrix(5,5)
+    m[0][0] = 1
+    m[1][1] = 1
+    m[2][2] = 1
+    m[3][3] = 1 
+    m[4][4] = 1
+   
 
